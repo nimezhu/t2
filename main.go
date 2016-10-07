@@ -99,6 +99,11 @@ func main() {
 			Usage:  "stats for column",
 			Action: CmdColStats,
 		},
+		{
+			Name:   "corr",
+			Usage:  "correlation for column",
+			Action: CmdColCorr,
+		},
 	}
 	app.Run(os.Args)
 }
