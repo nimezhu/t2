@@ -203,13 +203,13 @@ func CmdColGini(c *cli.Context) error {
 	tsv, err := loadTsv(c)
 	mat := tsv.Dense()
 	rowNum, colNum := mat.Dims()
-	fmt.Printf("col\tlabel\tgini\n")
+	fmt.Printf("label\tgini\n")
 	for i := 0; i < colNum; i++ {
 		data := make([]float64, rowNum)
 		for j := 0; j < rowNum; j++ {
 			data[j] = mat.At(j, i)
 		}
-		fmt.Printf("%d\t%s\t%f\n", i+1, tsv.ColNames[i], Gini(data))
+		fmt.Printf("%s\t%f\n", tsv.ColNames[i], Gini(data))
 	}
 	return err
 
