@@ -2,7 +2,7 @@ package main
 
 import (
 	"fmt"
-	"log"
+	//"log"
 	"math"
 	"os"
 	"strconv"
@@ -39,8 +39,15 @@ func main() {
 	// Commands
 	app.Commands = []cli.Command{
 		{
-			Name:   "binrows",
-			Usage:  "merge rows into bin / change different resolution",
+			Name:  "binrows",
+			Usage: "merge rows into bin / change different resolution",
+			Flags: []cli.Flag{
+				cli.IntFlag{
+					Name:  "binsize,b",
+					Value: 2,
+					Usage: "bin window size",
+				},
+			},
 			Action: CmdBinRows,
 		},
 		{
@@ -49,8 +56,15 @@ func main() {
 			Action: CmdInfo,
 		},
 		{
-			Name:   "view",
-			Usage:  "view table [precision]",
+			Name:  "view",
+			Usage: "view table",
+			Flags: []cli.Flag{
+				cli.IntFlag{
+					Name:  "precision,p",
+					Value: -1,
+					Usage: "precision",
+				},
+			},
 			Action: CmdView,
 		},
 		{
@@ -130,90 +144,58 @@ func binRows(t *Table, size int) *Table {
 	return &newTable
 }
 func CmdBinRows(c *cli.Context) error {
-	if c.NArg() == 0 {
-		log.Fatal("Usage: binrow file.tsv [binsize, default:2]")
-	}
-	fn := c.Args().Get(0)
-	binsize := 2
-	if c.NArg() > 2 {
-		bin, err := strconv.Atoi(c.Args().Get(2))
-		checkErr(err)
-		binsize = bin
-	}
-	tsv := Table{}
-	err := tsv.LoadTsv(fn)
-	checkErr(err)
-	newTsv := binRows(&tsv, binsize)
+	binsize := c.Int("binsize")
+	tsv, err := loadTsv(c)
+	newTsv := binRows(tsv, binsize)
 	fmt.Print(newTsv.PrettyString(-1))
 	return err
 }
 
 func CmdInfo(c *cli.Context) error {
-	if c.NArg() == 0 {
-		log.Fatal("Usage: info file.tsv")
-	}
-	fn := c.Args().Get(0)
-	tsv := Table{}
-	err := tsv.LoadTsv(fn)
-	checkErr(err)
+	tsv, err := loadTsv(c)
 	fmt.Print(tsv.Info())
 	return err
 }
 
-func CmdView(c *cli.Context) error {
-	if c.NArg() == 0 {
-		log.Fatal("Usage: view file.tsv [precision, default:-1]")
-	}
-	p := -1
-	if c.NArg() > 1 {
-		t, err := strconv.Atoi(c.Args().Get(1))
-		if err != nil {
-			p = -1
-		} else {
-			p = t
-		}
-	}
-	fn := c.Args().Get(0)
+func loadTsv(c *cli.Context) (*Table, error) {
 	tsv := Table{}
-	err := tsv.LoadTsv(fn)
+	if c.NArg() == 0 {
+		err := tsv.LoadFile(os.Stdin)
+		return &tsv, err
+	} else {
+		fn := c.Args().Get(0)
+		err := tsv.LoadTsv(fn)
+		checkErr(err)
+		return &tsv, err
+	}
+}
+func CmdView(c *cli.Context) error {
+	tsv, err := loadTsv(c)
+	p := c.Int("precision")
 	checkErr(err)
 	fmt.Print(tsv.PrettyString(p))
 	return err
 }
 
 func CmdLog(c *cli.Context) error {
-	if c.NArg() == 0 {
-		log.Fatal("Usage Help : log -h")
-	}
+	tsv, err := loadTsv(c)
 	root := c.Float64("root")
 	p := c.Float64("pseudo")
-	fn := c.Args().Get(0)
-	tsv := Table{}
-	err := tsv.LoadTsv(fn)
-	checkErr(err)
 	tsv.Log(root, p)
 	fmt.Print(tsv.PrettyString(-1))
 	return err
 }
 
 func CmdT(c *cli.Context) error {
-	if c.NArg() == 0 {
-		log.Fatal("Usage Help : log -h")
-	}
-	fn := c.Args().Get(0)
-	tsv := Table{}
-	err := tsv.LoadTsv(fn)
+	tsv, err := loadTsv(c)
 	checkErr(err)
 	tsv.T()
 	fmt.Print(tsv.PrettyString(-1))
-	return err
+	return nil
 }
 
 func CmdColGini(c *cli.Context) error {
-	fn := c.Args().Get(0)
-	tsv := Table{}
-	err := tsv.LoadTsv(fn)
-	checkErr(err)
+	tsv, err := loadTsv(c)
 	mat := tsv.Dense()
 	rowNum, colNum := mat.Dims()
 	fmt.Printf("col\tlabel\tgini\n")
@@ -224,6 +206,6 @@ func CmdColGini(c *cli.Context) error {
 		}
 		fmt.Printf("%d\t%s\t%f\n", i+1, tsv.ColNames[i], Gini(data))
 	}
-	return nil
+	return err
 
 }
