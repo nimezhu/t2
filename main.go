@@ -94,6 +94,11 @@ func main() {
 			Usage:  "gini file.tsv",
 			Action: CmdColGini,
 		},
+		{
+			Name:   "stats",
+			Usage:  "stats for column",
+			Action: CmdColStats,
+		},
 	}
 	app.Run(os.Args)
 }
