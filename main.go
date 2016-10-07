@@ -104,6 +104,18 @@ func main() {
 			Usage:  "correlation for column",
 			Action: CmdColCorr,
 		},
+		{
+			Name:   "cls",
+			Usage:  "NMF cluster both on rows and cols",
+			Action: CmdCls,
+			Flags: []cli.Flag{
+				cli.IntFlag{
+					Name:  "k",
+					Value: 5,
+					Usage: "choose k cluster",
+				},
+			},
+		},
 	}
 	app.Run(os.Args)
 }
