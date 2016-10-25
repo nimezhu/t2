@@ -2,7 +2,6 @@ package main
 
 import (
 	"fmt"
-	//"log"
 	"math"
 	"os"
 	"strconv"
@@ -113,6 +112,28 @@ func main() {
 					Name:  "k",
 					Value: 5,
 					Usage: "choose k cluster",
+				},
+			},
+		},
+		{
+			Name:   "top",
+			Usage:  "get top k in column [start-end) 0-index",
+			Action: CmdTop,
+			Flags: []cli.Flag{
+				cli.IntFlag{
+					Name:  "k",
+					Value: 100,
+					Usage: "choose top k",
+				},
+				cli.IntFlag{
+					Name:  "s",
+					Value: 1,
+					Usage: "start column",
+				},
+				cli.IntFlag{
+					Name:  "e",
+					Value: 2,
+					Usage: "end column",
 				},
 			},
 		},
@@ -229,5 +250,19 @@ func CmdColGini(c *cli.Context) error {
 		fmt.Printf("%s\t%f\n", tsv.ColNames[i], Gini(data))
 	}
 	return err
+
+}
+
+func CmdTop(c *cli.Context) error {
+	//tsv, err := loadTsv(c)
+	k := c.Int("k")
+	s := c.Int("s")
+	e := c.Int("e")
+	tsv, err := loadTsv(c)
+	checkErr(err)
+	rows, err := TblTopK(tsv, k, s, e)
+	checkErr(err)
+	fmt.Println(tsv.PrettyStringChosenRows(rows, -1))
+	return nil
 
 }
