@@ -7,6 +7,7 @@ import (
 	"strconv"
 	//"time"
 
+	"github.com/nimezhu/fire"
 	. "github.com/nimezhu/ice"
 	"github.com/urfave/cli"
 )
@@ -247,7 +248,7 @@ func CmdColGini(c *cli.Context) error {
 		for j := 0; j < rowNum; j++ {
 			data[j] = mat.At(j, i)
 		}
-		fmt.Printf("%s\t%f\n", tsv.ColNames[i], Gini(data))
+		fmt.Printf("%s\t%f\n", tsv.ColNames[i], fire.Gini(data))
 	}
 	return err
 

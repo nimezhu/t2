@@ -4,6 +4,7 @@ import (
 	"fmt"
 
 	"github.com/montanaflynn/stats"
+	"github.com/nimezhu/fire"
 	. "github.com/nimezhu/ice"
 	"github.com/urfave/cli"
 )
@@ -22,7 +23,7 @@ func CmdColStats(c *cli.Context) error {
 		q, _ := stats.Quartile(data)
 		max, _ := stats.Max(data)
 		mean, _ := stats.Mean(data)
-		gini := Gini(data)
+		gini := fire.Gini(data)
 
 		fmt.Printf("%s\t%f\t%f\t%f\t%f\t%f\t%f\t%f\n", tsv.ColNames[i], min, q.Q1, q.Q2, q.Q3, max, mean, gini)
 	}
