@@ -5,7 +5,6 @@ import (
 
 	"github.com/montanaflynn/stats"
 	"github.com/nimezhu/fire"
-	. "github.com/nimezhu/ice"
 	"github.com/urfave/cli"
 )
 

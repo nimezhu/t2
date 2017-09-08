@@ -3,9 +3,7 @@ package main
 import (
 	//"container/heap"
 	"testing"
-
 	//"github.com/gonum/matrix/mat64"
-	. "github.com/nimezhu/ice"
 )
 
 func TestHeap(t *testing.T) {

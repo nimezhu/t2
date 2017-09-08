@@ -8,7 +8,6 @@ import (
 	//"time"
 
 	"github.com/nimezhu/fire"
-	. "github.com/nimezhu/ice"
 	"github.com/urfave/cli"
 )
 

@@ -8,7 +8,6 @@ import (
 	"sort"
 
 	"github.com/gonum/matrix/mat64"
-	. "github.com/nimezhu/ice"
 )
 
 type Ele struct {
