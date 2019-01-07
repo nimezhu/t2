@@ -1,7 +1,6 @@
 package main
 
 import (
-	//"container/heap"
 	"testing"
 	//"github.com/gonum/matrix/mat64"
 )
@@ -12,5 +11,4 @@ func TestHeap(t *testing.T) {
 	a, _ := TblTopK(&tbl, 1, 1, 3)
 
 	t.Log(tbl.PrettyStringChosenRows(a, 2))
-
 }
